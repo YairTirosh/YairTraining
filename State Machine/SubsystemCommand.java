@@ -1,8 +1,8 @@
 public class SubsystemCommand{
     private final StateSubsystem actSystem;
-    private System log;
+    private iSystem log;
 
-    public SubsystemCommand(StateSubsystem actSystem, System log) {
+    public SubsystemCommand(StateSubsystem actSystem, iSystem log) {
         this.actSystem = actSystem;
         this.log = log;
     }
@@ -10,11 +10,11 @@ public class SubsystemCommand{
         return actSystem;
     }
     public void runSystem() {
-        if (StateSubsystem.actionState == SystemMode.ENABLE) {
+        if (actSystem.getSystemMode() == SystemMode.ENABLE) {
             State.getStateAction();
-            System.out.println(State.getName());
+            System.out.println(actSystem.currentState.getName());
         }
-        System.logSystem();
+        log.logSystem();
     }
 
 }

@@ -1,4 +1,4 @@
-abstract class StateSubsystem implements System{
+abstract class StateSubsystem implements iSystem{
     private final String name;
     private final State[] allStates;
     public State currentState;
