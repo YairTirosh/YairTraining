@@ -2,7 +2,6 @@ package frc.robot.Subsystem.IntakeTrain;
 
 import static edu.wpi.first.units.Units.Newton;
 
-import com.MAutils.DashBoard.DashBoardTab;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -13,9 +12,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeTrain extends SubsystemBase {
+    private static IntakeTrain intakeTrain;
+
     private final TalonFX motor1;
     private final TalonFX motor2;
 
@@ -30,8 +32,7 @@ public class IntakeTrain extends SubsystemBase {
     private final StatusSignal<Voltage> voltageSignalMotor2;
     private final StatusSignal<Current> currentSignalMotor2;
 
-    private DashBoardTab intakeTab = new DashBoardTab("intake");
-
+    public DigitalInput sensor1;   
 
     public IntakeTrain () {
         motor1 = new TalonFX(16);
@@ -51,13 +52,15 @@ public class IntakeTrain extends SubsystemBase {
 
         motor1Configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motor1Configuration.Feedback.SensorToMechanismRatio = IntakeTrainConstants.gear;
-        motor1Configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        motor1Configuration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         motor1.getConfigurator().apply(motor1Configuration);
 
         motor2Configuration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         motor2Configuration.Feedback.SensorToMechanismRatio = IntakeTrainConstants.gear;
         motor2Configuration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         motor2.getConfigurator().apply(motor2Configuration);
+
+        sensor1 = new DigitalInput(0);
     }
     public void setMotor1Voltage(double voltage) {
         motor1.setVoltage(voltage);
@@ -88,6 +91,14 @@ public class IntakeTrain extends SubsystemBase {
         return currentSignalMotor2.getValueAsDouble();
     }
 
+    public static IntakeTrain getInstanceIntakeTrain() {
+        if (intakeTrain == null) {
+            intakeTrain = new IntakeTrain();
+        }
+        return intakeTrain;
+    }
+
+
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(velocitySignalMotor1, velocitySignalMotor2, voltageSignalMotor1, voltageSignalMotor2, currentSignalMotor1, currentSignalMotor2);        
@@ -95,11 +106,10 @@ public class IntakeTrain extends SubsystemBase {
     MALog.log("/Subsystems/IntakeTrain/VoltageMotor1", getVoltageMotor1());
     MALog.log("/Subsystems/IntakeTrain/CurrentMotor1", getCurrentMotor1());
     MALog.log("/Subsystems/IntakeTrain/VelocityMotor1", getVelocityMotor1());
-    MALog.log("/Subsystems/IntakeTrain/VoltageMotor1", getVoltageMotor2());
+    MALog.log("/Subsystems/IntakeTrain/VoltageMotor2", getVoltageMotor2());
     MALog.log("/Subsystems/IntakeTrain/CurrentMotor2", getCurrentMotor2());
-    MALog.log("/Subsystems/IntakeTrain/VoltageMotor1", getVelocityMotor2());
+    MALog.log("/Subsystems/IntakeTrain/VoltageMotor2", getVelocityMotor2());
 
-    intakeTab.addNum("test1", 2);
     }
     
 
